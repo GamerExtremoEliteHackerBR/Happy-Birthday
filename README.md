@@ -50,12 +50,6 @@ Happy-Birthday/
 │ └── final.png # Imagem de vitória personalizada
 └── README.md # Este arquivo
 
-Happy-Birthday/
-├── index.html # Página principal do jogo
-├── birthday/
-│ └── final.png # Imagem de vitória personalizada
-└── README.md # Este arquivo
-
 
 ---
 
