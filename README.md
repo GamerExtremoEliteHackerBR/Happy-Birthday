@@ -44,14 +44,6 @@ Este é um jogo interativo de aniversário desenvolvido especialmente para celeb
 ---
 
 ## 📂 Estrutura do Projeto
-Happy-Birthday/
-├── index.html # Página principal do jogo
-├── birthday/
-│ └── final.png # Imagem de vitória personalizada
-└── README.md # Este arquivo
-
-
----
 ```
 Happy-Birthday/
 ├── index.html          # Página principal do jogo
@@ -59,6 +51,9 @@ Happy-Birthday/
 │   └── final.png       # Imagem de vitória personalizada
 └── README.md           # Este arquivo
 ```
+
+---
+
 
 ## 🎮 Controles
 
