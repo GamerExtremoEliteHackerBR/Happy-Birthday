@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Level 18 - Déryck</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0e1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+        }
+
+        #game-wrapper {
+            background: #141a2b;
+            padding: 25px 25px 30px;
+            border-radius: 28px;
+            box-shadow: 0 0 60px rgba(0, 200, 255, 0.12);
+            border: 2px solid #2a3a5e;
+            text-align: center;
+            max-width: 750px;
+            width: 100%;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 16px;
+            background: #0f1422;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            aspect-ratio: 700 / 500;
+        }
+
+        #hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 8px 12px 8px;
+            color: #b7e1ff;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 180, 255, 0.3);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        #hud span {
+            background: #1e2a44;
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1px solid #3a5a8a;
+        }
+
+        #message-box {
+            margin-top: 12px;
+            padding: 10px 16px;
+            color: #9bbaff;
+            font-size: 15px;
+            background: #1a2340;
+            border-radius: 40px;
+            border: 1px solid #2e4a72;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        /* --- ÁREA DA IMAGEM FINAL --- */
+        #final-container {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #0f1422;
+            border-radius: 20px;
+            border: 3px solid #ffd966;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.15);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #final-container img {
+            width: 100%;
+            border-radius: 14px;
+            display: block;
+            border: 2px solid #2a3a5e;
+        }
+
+        #final-container .btn-restart {
+            margin-top: 18px;
+            background: #ffd966;
+            border: none;
+            color: #0b0e1a;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid #e6b800;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+        }
+
+        #final-container .btn-restart:hover {
+            background: #ffe08a;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        /* --- BOTÃO RESTART PRINCIPAL (durante o jogo) --- */
+        .btn-restart-game {
+            margin-top: 14px;
+            background: #2a3f6a;
+            border: none;
+            color: #d4edff;
+            padding: 10px 32px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #4a7aaa;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-restart-game:hover {
+            background: #3a5a8a;
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            #game-wrapper {
+                padding: 12px;
+            }
+            #hud {
+                font-size: 13px;
+                justify-content: center;
+            }
+            #hud span {
+                padding: 4px 12px;
+                font-size: 13px;
+            }
+            #message-box {
+                font-size: 13px;
+                padding: 8px 12px;
+                min-height: 44px;
+            }
+            #final-container {
+                padding: 10px;
+            }
+            #final-container .btn-restart {
+                font-size: 15px;
+                padding: 10px 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-wrapper">
+    <!-- HUD -->
+    <div id="hud">
+        <span>⭐ <span id="star-counter">0</span> / 18</span>
+        <span>⏱️ <span id="timer-display">00</span></span>
+        <span>🎯 NÍVEL 18</span>
+    </div>
+
+    <!-- CANVAS -->
+    <canvas id="gameCanvas" width="700" height="500"></canvas>
+
+    <!-- MENSAGEM -->
+    <div id="message-box">🕹️ Clique nas estrelas para coletar! Atinga 18 e desbloqueie a mensagem.</div>
+
+    <!-- BOTÃO REINICIAR (durante o jogo) -->
+    <button class="btn-restart-game" id="restartBtnGame">🔄 NOVA PARTIDA</button>
+
+    <!-- CONTAINER FINAL: IMAGEM + BOTÃO JOGAR NOVAMENTE -->
+    <div id="final-container">
+        <!-- AQUI você coloca a imagem que criou -->
+        <!--<img id="reward-image" src="https://via.placeholder.com/700x400/1a2340/ffd966?text=PARABENS+DERYCK+LEVEL+18" alt="Parabéns Déryck - Level 18">-->
+        <img id="reward-image" src="/storage/emulated/0/Download/Birthday Gamer/DeryckBrirtday/birthday/final.pn" alt="Parabéns Déryck - Level 18">
+        
+        
+        
+        <button class="btn-restart" id="restartBtnFinal">🔄 JOGAR NOVAMENTE</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const starCounter = document.getElementById('star-counter');
+        const timerDisplay = document.getElementById('timer-display');
+        const messageBox = document.getElementById('message-box');
+        const finalContainer = document.getElementById('final-container');
+        const rewardImage = document.getElementById('reward-image');
+        const restartBtnGame = document.getElementById('restartBtnGame');
+        const restartBtnFinal = document.getElementById('restartBtnFinal');
+
+        // --- CONFIGURAÇÕES ---
+        const TARGET = 18;
+        const STAR_RADIUS = 22;
+        const STAR_COUNT = 30;
+
+        // --- ESTADO ---
+        let stars = [];
+        let collected = 0;
+        let gameActive = true;
+        let timeElapsed = 0;
+        let timerInterval = null;
+        let animationFrame = null;
+        let gameFinished = false;
+
+        // --- FUNÇÕES AUXILIARES ---
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createStars() {
+            const newStars = [];
+            for (let i = 0; i < STAR_COUNT; i++) {
+                let x, y, overlap;
+                let attempts = 0;
+                do {
+                    x = random(STAR_RADIUS + 8, canvas.width - STAR_RADIUS - 8);
+                    y = random(STAR_RADIUS + 8, canvas.height - STAR_RADIUS - 8);
+                    overlap = newStars.some(s => Math.hypot(s.x - x, s.y - y) < STAR_RADIUS * 2.3);
+                    attempts++;
+                } while (overlap && attempts < 150);
+                newStars.push({
+                    x, y,
+                    radius: STAR_RADIUS,
+                    pulse: random(0, Math.PI * 2),
+                    speed: random(0.02, 0.05),
+                    baseRadius: STAR_RADIUS,
+                    collected: false
+                });
+            }
+            return newStars;
+        }
+
+        // --- RESET DO JOGO ---
+        function resetGame() {
+            // Para timers e animações
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+
+            // Reseta estado
+            stars = createStars();
+            collected = 0;
+            gameActive = true;
+            gameFinished = false;
+            timeElapsed = 0;
+            timerDisplay.textContent = '00';
+            starCounter.textContent = '0';
+
+            // Esconde container final e mostra botão do jogo
+            finalContainer.style.display = 'none';
+            restartBtnGame.style.display = 'inline-block';
+
+            // Reseta mensagem
+            messageBox.innerHTML = '🕹️ Clique nas estrelas para coletar! Atinga 18 e desbloqueie a mensagem.';
+            messageBox.style.color = '#9bbaff';
+            messageBox.style.background = '#1a2340';
+
+            // Desenha tela inicial
+            draw();
+
+            // Inicia timer
+            timerInterval = setInterval(() => {
+                if (gameActive && !gameFinished) {
+                    timeElapsed++;
+                    timerDisplay.textContent = String(timeElapsed).padStart(2, '0');
+                }
+            }, 1000);
+
+            // Inicia animação
+            function animate() {
+                if (gameFinished) {
+                    // Se o jogo acabou, para a animação
+                    return;
+                }
+                // Atualiza pulsação das estrelas
+                for (let s of stars) {
+                    if (!s.collected) {
+                        s.pulse += s.speed;
+                    }
+                }
+                draw();
+                animationFrame = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- DESENHO ---
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Grid de fundo
+            ctx.strokeStyle = '#1e2a44';
+            ctx.lineWidth = 0.6;
+            for (let i = 0; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+
+            // Desenha estrelas
+            for (let s of stars) {
+                if (s.collected) continue;
+
+                const pulseFactor = 1 + 0.15 * Math.sin(s.pulse);
+                const r = s.baseRadius * pulseFactor;
+
+                // Brilho externo
+                const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r * 1.8);
+                grad.addColorStop(0, 'rgba(255, 215, 0, 0.20)');
+                grad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, r * 1.8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Estrela de 5 pontas
+                ctx.save();
+                ctx.translate(s.x, s.y);
+                ctx.rotate(s.pulse * 0.4);
+                ctx.beginPath();
+                const points = 5;
+                const outer = r;
+                const inner = r * 0.45;
+                for (let i = 0; i < points * 2; i++) {
+                    const radius = i % 2 === 0 ? outer : inner;
+                    const angle = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
+                    const px = Math.cos(angle) * radius;
+                    const py = Math.sin(angle) * radius;
+                    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.fillStyle = '#ffd966';
+                ctx.shadowColor = '#ffb800';
+                ctx.shadowBlur = 35;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = '#e6a800';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.restore();
+
+                // Brilho central
+                ctx.fillStyle = 'rgba(255, 255, 220, 0.5)';
+                ctx.beginPath();
+                ctx.arc(s.x - 3, s.y - 4, r * 0.12, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Mensagem de vitória no canvas
+            if (collected >= TARGET && !gameFinished) {
+                ctx.save();
+                ctx.font = 'bold 38px "Courier New", monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = '#ffd700';
+                ctx.shadowBlur = 50;
+                ctx.fillStyle = '#ffd700';
+                ctx.fillText('🌟 LEVEL UP!', canvas.width/2, 60);
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#b7e1ff';
+                ctx.font = '18px "Courier New", monospace';
+                ctx.fillText('📬 Desbloqueando mensagem...', canvas.width/2, canvas.height - 35);
+                ctx.restore();
+            }
+        }
+
+        // --- CLIQUE NO CANVAS ---
+        function handleCanvasClick(e) {
+            if (!gameActive || gameFinished) return;
+            if (collected >= TARGET) {
+                // Se já atingiu 18, mas ainda não mostrou a imagem
+                return;
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            const mouseX = (e.clientX - rect.left) * scaleX;
+            const mouseY = (e.clientY - rect.top) * scaleY;
+
+            let found = false;
+            for (let s of stars) {
+                if (s.collected) continue;
+                const dx = mouseX - s.x;
+                const dy = mouseY - s.y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < s.baseRadius + 10) {
+                    s.collected = true;
+                    collected++;
+                    starCounter.textContent = collected;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                messageBox.innerHTML = `⭐ Coletou! ${collected}/${TARGET}`;
+                starCounter.style.transform = 'scale(1.5)';
+                setTimeout(() => starCounter.style.transform = 'scale(1)', 150);
+
+                if (collected >= TARGET) {
+                    // VENCEU!
+                    gameActive = false;
+                    gameFinished = true;
+                    if (timerInterval) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                    }
+                    if (animationFrame) {
+                        cancelAnimationFrame(animationFrame);
+                        animationFrame = null;
+                    }
+                    messageBox.innerHTML = '🎉 PARABÉNS! VOCÊ DESBLOQUEOU O NÍVEL 18!';
+                    messageBox.style.color = '#ffd700';
+                    messageBox.style.background = '#1e2a44';
+
+                    // Mostra a imagem final após 1 segundo
+                    setTimeout(() => {
+                        showFinalImage();
+                    }, 1000);
+
+                    // Força um redesenho para mostrar LEVEL UP!
+                    draw();
+                }
+            } else {
+                messageBox.innerHTML = '❌ Não foi dessa vez. Tente outra estrela!';
+                setTimeout(() => {
+                    if (collected < TARGET && !gameFinished) {
+                        messageBox.innerHTML = '🕹️ Clique nas estrelas para coletar! Atinga 18 e desbloqueie a mensagem.';
+                    }
+                }, 800);
+            }
+        }
+
+        // --- EXIBE IMAGEM FINAL ---
+        function showFinalImage() {
+            // Substitua a URL pela sua imagem
+            // Exemplo: rewardImage.src = "6aaba7521b6bc642909c0a0ab8716b98ababaf5ae816915376dc20418a4f23b7.png";
+            //rewardImage.src = "https://via.placeholder.com/700x400/1a2340/ffd966?text=PARABENS+DERYCK+LEVEL+18";
+            rewardImage.src = "/storage/emulated/0/Download/Birthday Gamer/DeryckBrirtday/birthday/final.png"
+
+            finalContainer.style.display = 'block';
+            restartBtnGame.style.display = 'none';
+            messageBox.innerHTML = '🎮 MISSÃO COMPLETA! VOCÊ É O PLAYER 1!';
+            messageBox.style.color = '#ffd700';
+            messageBox.style.background = '#1a2a44';
+
+            // Scroll suave até a imagem
+            setTimeout(() => {
+                finalContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 200);
+        }
+
+        // --- EVENTOS ---
+        canvas.addEventListener('click', handleCanvasClick);
+
+        restartBtnGame.addEventListener('click', resetGame);
+        restartBtnFinal.addEventListener('click', resetGame);
+
+        // --- INICIALIZAÇÃO ---
+        resetGame();
+
+        // =============================================
+        // INSTRUÇÕES PARA USAR SUA IMAGEM:
+        // 1. Coloque a imagem na mesma pasta do HTML
+        // 2. Substitua a linha abaixo:
+        //    rewardImage.src = "6aaba7521b6bc642909c0a0ab8716b98ababaf5ae816915376dc20418a4f23b7.png";
+        // =============================================
+
+    })();
+</script>
+
+</body>
+</html>

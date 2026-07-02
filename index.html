@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎮 Level 18 - Déryck</title>
+    <style>
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0e1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            flex-direction: column;
+        }
+
+        /* ===== CONTAINER PRINCIPAL ===== */
+        #game-wrapper {
+            background: #141a2b;
+            padding: 24px;
+            border-radius: 28px;
+            box-shadow: 0 0 60px rgba(0, 200, 255, 0.12);
+            border: 2px solid #2a3a5e;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* ===== CANVAS ===== */
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 16px;
+            background: #0f1422;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 700 / 500;
+            border: 1px solid #1e2a44;
+        }
+
+        /* ===== HUD ===== */
+        #hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 6px 10px 6px;
+            color: #b7e1ff;
+            font-size: 17px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(0, 180, 255, 0.2);
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        #hud span {
+            background: #1e2a44;
+            padding: 5px 16px;
+            border-radius: 30px;
+            border: 1px solid #3a5a8e;
+        }
+
+        /* ===== MENSAGEM ===== */
+        #message-box {
+            margin-top: 10px;
+            padding: 10px 14px;
+            color: #9bbaff;
+            font-size: 15px;
+            background: #1a2340;
+            border-radius: 40px;
+            border: 1px solid #2e4a72;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        /* ===== BOTÃO REINICIAR (DURANTE O JOGO) ===== */
+        .btn-restart-small {
+            margin-top: 12px;
+            background: #2a3f6a;
+            border: none;
+            color: #d4edff;
+            padding: 8px 28px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #4a7aaa;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-restart-small:hover {
+            background: #3a5a8a;
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.2);
+        }
+
+        /* ===== RODAPÉ (TELA PRINCIPAL) ===== */
+        #footer {
+            margin-top: 30px;
+            padding: 16px 24px;
+            color: #4a6a8a;
+            font-size: 14px;
+            text-align: center;
+            border-top: 1px solid #1a2a44;
+            max-width: 800px;
+            width: 100%;
+            letter-spacing: 0.5px;
+        }
+
+        #footer .dev-name {
+            color: #ff6b6b;
+            font-weight: bold;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        #footer .dev-icon {
+            color: #ffd700;
+            margin-left: 6px;
+        }
+
+        /* ===== OVERLAY DE VITÓRIA (NOVA TELA) ===== */
+        #victory-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(8, 12, 26, 0.92);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            animation: fadeIn 0.6s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #victory-modal {
+            background: #141a2b;
+            padding: 30px;
+            border-radius: 32px;
+            border: 3px solid #ffd966;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.15);
+            max-width: 750px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        #victory-modal .modal-title {
+            color: #ffd966;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        #victory-modal .modal-title span {
+            color: #b7e1ff;
+        }
+
+        /* ===== RODAPÉ DO MODAL ===== */
+        #victory-modal .modal-footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #1a2a44;
+            color: #4a6a8a;
+            font-size: 13px;
+        }
+
+        #victory-modal .modal-footer .dev-name {
+            color: #ff6b6b;
+            font-weight: bold;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        #victory-modal .modal-footer .dev-icon {
+            color: #ffd700;
+            margin-left: 6px;
+        }
+
+        /* ===== IMAGEM CLICÁVEL ===== */
+        #victory-modal .clickable-image {
+            cursor: pointer;
+            display: block;
+            border-radius: 16px;
+            border: 3px solid #ffd966;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            height: auto;
+        }
+
+        #victory-modal .clickable-image:hover {
+            transform: scale(1.01);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+        }
+
+        /* ===== INDICAÇÃO PARA CLICAR ===== */
+        #click-hint {
+            margin-top: 12px;
+            color: #ffd966;
+            font-size: 14px;
+            opacity: 0.8;
+            animation: pulseText 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== BOTÃO JOGAR NOVAMENTE ===== */
+        #victory-modal .btn-restart {
+            margin-top: 18px;
+            background: #ffd966;
+            border: none;
+            color: #0b0e1a;
+            padding: 14px 48px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.25s;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+            display: inline-block;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        #victory-modal .btn-restart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+            background: #ffe08a;
+        }
+
+        /* ===== BOTÃO FECHAR MODAL ===== */
+        #victory-modal .btn-close-modal {
+            margin-top: 12px;
+            background: transparent;
+            border: 1px solid #4a6a8a;
+            color: #8aaccf;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Courier New', monospace;
+        }
+
+        #victory-modal .btn-close-modal:hover {
+            background: #1a2a44;
+            border-color: #6a9ac0;
+        }
+
+        /* ===== OVERLAY DE TELA CHEIA ===== */
+        #fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.4s ease;
+            cursor: pointer;
+            flex-direction: column;
+        }
+
+        #fullscreen-overlay img {
+            max-width: 95vw;
+            max-height: 85vh;
+            width: auto;
+            height: auto;
+            border-radius: 20px;
+            border: 4px solid #ffd966;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.3);
+            object-fit: contain;
+        }
+
+        #fullscreen-overlay .close-hint {
+            margin-top: 15px;
+            color: #ffd966;
+            font-size: 16px;
+            opacity: 0.6;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 24px;
+            border-radius: 40px;
+            border: 1px solid #ffd966;
+        }
+
+        /* ===== RODAPÉ DA TELA CHEIA ===== */
+        #fullscreen-overlay .fullscreen-footer {
+            margin-top: 15px;
+            color: #4a6a8a;
+            font-size: 13px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        #fullscreen-overlay .fullscreen-footer .dev-name {
+            color: #ff6b6b;
+            font-weight: bold;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        #fullscreen-overlay .fullscreen-footer .dev-icon {
+            color: #ffd700;
+            margin-left: 6px;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 600px) {
+            #game-wrapper {
+                padding: 12px;
+            }
+            #hud {
+                font-size: 13px;
+                justify-content: center;
+            }
+            #hud span {
+                padding: 4px 12px;
+            }
+            #message-box {
+                font-size: 13px;
+                padding: 8px 12px;
+                min-height: 42px;
+            }
+            #victory-modal {
+                padding: 20px;
+            }
+            #victory-modal .modal-title {
+                font-size: 18px;
+            }
+            #victory-modal .btn-restart {
+                font-size: 17px;
+                padding: 12px 32px;
+                max-width: 100%;
+            }
+            #fullscreen-overlay .close-hint {
+                font-size: 13px;
+                padding: 6px 16px;
+            }
+            #fullscreen-overlay .fullscreen-footer {
+                font-size: 11px;
+            }
+            #footer {
+                font-size: 12px;
+                padding: 12px 16px;
+            }
+            #footer .dev-name {
+                font-size: 13px;
+            }
+            #victory-modal .modal-footer {
+                font-size: 11px;
+            }
+            #victory-modal .modal-footer .dev-name {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-wrapper">
+        <!-- HUD -->
+        <div id="hud">
+            <span>⭐ <span id="star-counter">0</span> / 18</span>
+            <span>⏱️ <span id="timer-display">00</span>s</span>
+            <span>🎯 NÍVEL 18</span>
+        </div>
+
+        <!-- CANVAS -->
+        <canvas id="gameCanvas" width="700" height="500"></canvas>
+
+        <!-- MENSAGEM DINÂMICA -->
+        <div id="message-box">🕹️ Clique nas estrelas douradas. Colete 18 e desbloqueie a surpresa!</div>
+
+        <!-- BOTÃO REINICIAR (durante o jogo) -->
+        <button class="btn-restart-small" id="restartBtn">🔄 Nova Partida</button>
+    </div>
+
+    <!-- ===== RODAPÉ (TELA PRINCIPAL) ===== -->
+    <div id="footer">
+        Desenvolvido por <span class="dev-name">Gamer Extremo</span> <span class="dev-icon">🎮</span> © 2026
+    </div>
+
+    <!-- ===== OVERLAY DE VITÓRIA (NOVA TELA) ===== -->
+    <div id="victory-overlay">
+        <div id="victory-modal">
+            <div class="modal-title">🎉 <span>PARABÉNS, DÉRYCK!</span> 🎉</div>
+            
+            <!-- IMAGEM CLICÁVEL -->
+            <img 
+                src="/storage/emulated/0/Download/Birthday Gamer/DeryckBrirtday/birthday/final.png" 
+                alt="Parabéns Déryck - Level 18" 
+                class="clickable-image"
+                id="victoryImage"
+            />
+            
+            <div id="click-hint">🖱️ Clique na imagem para abrir em tela cheia</div>
+            
+            <!-- BOTÃO JOGAR NOVAMENTE -->
+            <button class="btn-restart" id="restartFromVictoryBtn">🔄 Jogar Novamente</button>
+            
+            <!-- BOTÃO FECHAR -->
+            <button class="btn-close-modal" id="closeVictoryBtn">✕ Fechar</button>
+
+            <!-- ===== RODAPÉ DO MODAL ===== -->
+            <div class="modal-footer">
+                Desenvolvido por <span class="dev-name">Gamer Extremo</span> <span class="dev-icon">🎮</span> © 2026
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OVERLAY DE TELA CHEIA ===== -->
+    <div id="fullscreen-overlay" onclick="closeFullscreen()">
+        <img 
+            <!--src="/storage/emulated/0/Download/Birthday Gamer/DeryckBrirtday/birthday/final.png" -->
+            src="src/final.png" 
+            alt="Parabéns Déryck - Level 18 - Tela Cheia" 
+            id="fullscreenImage"
+        />
+        <div class="close-hint">Clique em qualquer lugar para fechar</div>
+        
+        <!-- ===== RODAPÉ DA TELA CHEIA ===== -->
+        <div class="fullscreen-footer">
+            Desenvolvido por <span class="dev-name">Gamer Extremo</span> <span class="dev-icon">🎮</span> © 2026
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const starCounter = document.getElementById('star-counter');
+            const timerDisplay = document.getElementById('timer-display');
+            const messageBox = document.getElementById('message-box');
+            const victoryOverlay = document.getElementById('victory-overlay');
+            const restartBtn = document.getElementById('restartBtn');
+            const restartFromVictoryBtn = document.getElementById('restartFromVictoryBtn');
+            const closeVictoryBtn = document.getElementById('closeVictoryBtn');
+            const victoryImage = document.getElementById('victoryImage');
+            const fullscreenOverlay = document.getElementById('fullscreen-overlay');
+            const fullscreenImage = document.getElementById('fullscreenImage');
+
+            // --- CONFIGURAÇÕES ---
+            const TARGET = 18;
+            const STAR_RADIUS = 22;
+            const STAR_COUNT = 30;
+
+            // --- ESTADO DO JOGO ---
+            let stars = [];
+            let collected = 0;
+            let gameActive = true;
+            let timeElapsed = 0;
+            let timerInterval = null;
+            let animationFrame = null;
+
+            // --- FUNÇÕES AUXILIARES ---
+            function random(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            // --- CRIA ESTRELAS SEM SOBREPOSIÇÃO ---
+            function createStars() {
+                const newStars = [];
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    let x, y, overlap;
+                    let attempts = 0;
+                    do {
+                        x = random(STAR_RADIUS + 8, canvas.width - STAR_RADIUS - 8);
+                        y = random(STAR_RADIUS + 8, canvas.height - STAR_RADIUS - 8);
+                        overlap = newStars.some(s => Math.hypot(s.x - x, s.y - y) < STAR_RADIUS * 2.4);
+                        attempts++;
+                    } while (overlap && attempts < 150);
+                    newStars.push({
+                        x, y,
+                        radius: STAR_RADIUS,
+                        pulse: random(0, Math.PI * 2),
+                        speed: random(0.02, 0.05),
+                        baseRadius: STAR_RADIUS,
+                        collected: false
+                    });
+                }
+                return newStars;
+            }
+
+            // --- RESETA O JOGO ---
+            function resetGame() {
+                // Para timers e animações
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                if (animationFrame) {
+                    cancelAnimationFrame(animationFrame);
+                    animationFrame = null;
+                }
+
+                // Esconde overlays
+                victoryOverlay.style.display = 'none';
+                fullscreenOverlay.style.display = 'none';
+
+                // Reseta estado
+                stars = createStars();
+                collected = 0;
+                gameActive = true;
+                timeElapsed = 0;
+                timerDisplay.textContent = '00';
+                starCounter.textContent = '0';
+                messageBox.innerHTML = '🕹️ Clique nas estrelas douradas. Colete 18 e desbloqueie a surpresa!';
+                messageBox.style.color = '#9bbaff';
+                messageBox.style.background = '#1a2340';
+
+                // Desenha o cenário
+                draw();
+
+                // Inicia o timer
+                timerInterval = setInterval(() => {
+                    if (gameActive) {
+                        timeElapsed++;
+                        timerDisplay.textContent = String(timeElapsed).padStart(2, '0');
+                    }
+                }, 1000);
+
+                // Inicia a animação (pulsação das estrelas)
+                function animate() {
+                    if (!gameActive && collected >= TARGET) {
+                        return;
+                    }
+                    for (let s of stars) {
+                        s.pulse += s.speed;
+                    }
+                    draw();
+                    animationFrame = requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            // --- DESENHA O CANVAS ---
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid de fundo
+                ctx.strokeStyle = '#1a2642';
+                ctx.lineWidth = 0.6;
+                for (let i = 0; i < canvas.width; i += 45) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i < canvas.height; i += 45) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Desenha cada estrela
+                for (let s of stars) {
+                    if (s.collected) continue;
+
+                    const pulseFactor = 1 + 0.18 * Math.sin(s.pulse);
+                    const r = s.baseRadius * pulseFactor;
+
+                    // Brilho externo
+                    const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r * 1.8);
+                    grad.addColorStop(0, 'rgba(255, 215, 0, 0.20)');
+                    grad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, r * 1.8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Estrela de 5 pontas
+                    ctx.save();
+                    ctx.translate(s.x, s.y);
+                    ctx.rotate(s.pulse * 0.4);
+                    ctx.beginPath();
+                    const points = 5;
+                    const outer = r;
+                    const inner = r * 0.45;
+                    for (let i = 0; i < points * 2; i++) {
+                        const radius = i % 2 === 0 ? outer : inner;
+                        const angle = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
+                        const px = Math.cos(angle) * radius;
+                        const py = Math.sin(angle) * radius;
+                        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = '#ffd966';
+                    ctx.shadowColor = '#ffb800';
+                    ctx.shadowBlur = 35;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = '#d49a00';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    ctx.restore();
+
+                    // Brilho central
+                    ctx.fillStyle = 'rgba(255, 255, 220, 0.5)';
+                    ctx.beginPath();
+                    ctx.arc(s.x - 3, s.y - 4, r * 0.12, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Se venceu, mensagem no canvas
+                if (collected >= TARGET && gameActive) {
+                    ctx.save();
+                    ctx.font = 'bold 40px "Courier New", monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.shadowColor = '#ffd700';
+                    ctx.shadowBlur = 50;
+                    ctx.fillStyle = '#ffd700';
+                    ctx.fillText('🌟 LEVEL UP!', canvas.width / 2, 60);
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#b7e1ff';
+                    ctx.font = '18px "Courier New", monospace';
+                    ctx.fillText('🎁 Desbloqueando sua recompensa...', canvas.width / 2, canvas.height - 35);
+                    ctx.restore();
+                }
+            }
+
+            // --- MOSTRA O OVERLAY DE VITÓRIA (NOVA TELA) ---
+            function showVictory() {
+                victoryOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                messageBox.innerHTML = '🎉 PARABÉNS! MISSÃO CUMPRIDA!';
+                messageBox.style.color = '#ffd700';
+                messageBox.style.background = '#1e2a44';
+            }
+
+            // --- FECHA OVERLAY DE VITÓRIA ---
+            function closeVictory() {
+                victoryOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            // --- ABRE TELA CHEIA ---
+            function openFullscreen() {
+                fullscreenOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            // --- FECHA TELA CHEIA ---
+            window.closeFullscreen = function() {
+                fullscreenOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            };
+
+            // Fecha com a tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (fullscreenOverlay.style.display === 'flex') {
+                        closeFullscreen();
+                    }
+                    if (victoryOverlay.style.display === 'flex') {
+                        closeVictory();
+                    }
+                }
+            });
+
+            // --- CLIQUE NO CANVAS ---
+            function handleCanvasClick(e) {
+                if (!gameActive) return;
+
+                // Se já coletou 18, exibe a tela de vitória (caso não tenha sido chamado)
+                if (collected >= TARGET) {
+                    if (victoryOverlay.style.display === 'none') {
+                        gameActive = false;
+                        if (timerInterval) {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                        }
+                        showVictory();
+                    }
+                    return;
+                }
+
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                const mouseX = (e.clientX - rect.left) * scaleX;
+                const mouseY = (e.clientY - rect.top) * scaleY;
+
+                let found = false;
+                for (let s of stars) {
+                    if (s.collected) continue;
+                    const dist = Math.hypot(mouseX - s.x, mouseY - s.y);
+                    if (dist < s.baseRadius + 10) {
+                        s.collected = true;
+                        collected++;
+                        starCounter.textContent = collected;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    messageBox.innerHTML = `⭐ Coletou! ${collected}/${TARGET}`;
+                    if (collected >= TARGET) {
+                        messageBox.innerHTML = '🎉 VOCÊ COLETOU TODAS AS 18 ESTRELAS!';
+                        messageBox.style.color = '#ffd700';
+                        messageBox.style.background = '#1e2a44';
+                        gameActive = false;
+                        if (timerInterval) {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                        }
+                        setTimeout(() => {
+                            showVictory();
+                        }, 700);
+                    } else {
+                        starCounter.style.transform = 'scale(1.5)';
+                        setTimeout(() => starCounter.style.transform = 'scale(1)', 150);
+                    }
+                } else {
+                    messageBox.innerHTML = '❌ Não foi dessa vez. Tente outra estrela!';
+                    setTimeout(() => {
+                        if (collected < TARGET) {
+                            messageBox.innerHTML = '🕹️ Clique nas estrelas douradas. Colete 18 e desbloqueie a surpresa!';
+                        }
+                    }, 800);
+                }
+            }
+
+            // --- EVENTOS ---
+            canvas.addEventListener('click', handleCanvasClick);
+            restartBtn.addEventListener('click', resetGame);
+            restartFromVictoryBtn.addEventListener('click', function() {
+                closeVictory();
+                resetGame();
+            });
+            closeVictoryBtn.addEventListener('click', closeVictory);
+
+            // Clique na imagem abre tela cheia
+            victoryImage.addEventListener('click', openFullscreen);
+
+            // --- INICIALIZA ---
+            resetGame();
+        })();
+    </script>
+
+</body>
+</html>
