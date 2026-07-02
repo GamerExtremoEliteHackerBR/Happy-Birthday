@@ -26,11 +26,11 @@
         /* ===== CONTAINER PRINCIPAL ===== */
         #game-wrapper {
             background: #141a2b;
-            padding: 24px;
-            border-radius: 28px;
+            padding: 30px;
+            border-radius: 32px;
             box-shadow: 0 0 60px rgba(0, 200, 255, 0.12);
             border: 2px solid #2a3a5e;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             text-align: center;
         }
@@ -54,49 +54,57 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 6px 10px 6px;
+            padding: 16px 10px 14px 10px;
             color: #b7e1ff;
-            font-size: 17px;
+            font-size: 22px;
             font-weight: bold;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(0, 180, 255, 0.2);
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 10px;
         }
 
             #hud span {
                 background: #1e2a44;
-                padding: 5px 16px;
-                border-radius: 30px;
+                padding: 10px 24px;
+                border-radius: 40px;
                 border: 1px solid #3a5a8e;
+                font-size: 20px;
             }
+
+                #hud span #star-counter,
+                #hud span #timer-display {
+                    font-size: 22px;
+                    font-weight: bold;
+                }
 
         /* ===== MENSAGEM ===== */
         #message-box {
-            margin-top: 10px;
-            padding: 10px 14px;
+            margin-top: 14px;
+            padding: 14px 20px;
             color: #9bbaff;
-            font-size: 15px;
+            font-size: 19px;
             background: #1a2340;
             border-radius: 40px;
             border: 1px solid #2e4a72;
-            min-height: 48px;
+            min-height: 56px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            font-weight: bold;
         }
 
         /* ===== BOTÃO REINICIAR (DURANTE O JOGO) ===== */
         .btn-restart-small {
-            margin-top: 12px;
+            margin-top: 16px;
             background: #2a3f6a;
             border: none;
             color: #d4edff;
-            padding: 8px 28px;
+            padding: 12px 36px;
             border-radius: 40px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 19px;
             cursor: pointer;
             transition: 0.2s;
             border: 1px solid #4a7aaa;
@@ -111,28 +119,29 @@
 
         /* ===== RODAPÉ (TELA PRINCIPAL) ===== */
         #footer {
-            margin-top: 30px;
-            padding: 16px 24px;
+            margin-top: 35px;
+            padding: 20px 24px;
             color: #4a6a8a;
-            font-size: 14px;
+            font-size: 18px;
             text-align: center;
             border-top: 1px solid #1a2a44;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
             #footer .dev-name {
                 color: #ff6b6b;
                 font-weight: bold;
                 text-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
-                font-size: 16px;
-                letter-spacing: 1px;
+                font-size: 20px;
+                letter-spacing: 1.5px;
             }
 
             #footer .dev-icon {
                 color: #ffd700;
-                margin-left: 6px;
+                margin-left: 8px;
+                font-size: 20px;
             }
 
         /* ===== OVERLAY DE VITÓRIA (NOVA TELA) ===== */
@@ -147,7 +156,7 @@
             z-index: 9998;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 40px;
             animation: fadeIn 0.6s ease;
             backdrop-filter: blur(8px);
         }
@@ -166,11 +175,11 @@
 
         #victory-modal {
             background: #141a2b;
-            padding: 30px;
-            border-radius: 32px;
+            padding: 40px;
+            border-radius: 36px;
             border: 3px solid #ffd966;
             box-shadow: 0 0 80px rgba(255, 215, 0, 0.15);
-            max-width: 750px;
+            max-width: 850px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -179,9 +188,9 @@
 
             #victory-modal .modal-title {
                 color: #ffd966;
-                font-size: 24px;
+                font-size: 32px;
                 font-weight: bold;
-                margin-bottom: 16px;
+                margin-bottom: 20px;
                 text-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
             }
 
@@ -191,24 +200,25 @@
 
             /* ===== RODAPÉ DO MODAL ===== */
             #victory-modal .modal-footer {
-                margin-top: 20px;
-                padding-top: 16px;
+                margin-top: 24px;
+                padding-top: 20px;
                 border-top: 1px solid #1a2a44;
                 color: #4a6a8a;
-                font-size: 13px;
+                font-size: 17px;
             }
 
                 #victory-modal .modal-footer .dev-name {
                     color: #ff6b6b;
                     font-weight: bold;
                     text-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
-                    font-size: 14px;
-                    letter-spacing: 1px;
+                    font-size: 18px;
+                    letter-spacing: 1.5px;
                 }
 
                 #victory-modal .modal-footer .dev-icon {
                     color: #ffd700;
-                    margin-left: 6px;
+                    margin-left: 8px;
+                    font-size: 18px;
                 }
 
             /* ===== IMAGEM CLICÁVEL ===== */
@@ -230,11 +240,12 @@
 
         /* ===== INDICAÇÃO PARA CLICAR ===== */
         #click-hint {
-            margin-top: 12px;
+            margin-top: 16px;
             color: #ffd966;
-            font-size: 14px;
+            font-size: 18px;
             opacity: 0.8;
             animation: pulseText 1.5s ease-in-out infinite;
+            font-weight: bold;
         }
 
         @keyframes pulseText {
@@ -249,22 +260,22 @@
 
         /* ===== BOTÃO JOGAR NOVAMENTE ===== */
         #victory-modal .btn-restart {
-            margin-top: 18px;
+            margin-top: 22px;
             background: #ffd966;
             border: none;
             color: #0b0e1a;
-            padding: 14px 48px;
+            padding: 18px 56px;
             border-radius: 50px;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
             transition: 0.25s;
             font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
             display: inline-block;
             width: 100%;
-            max-width: 320px;
+            max-width: 380px;
         }
 
             #victory-modal .btn-restart:hover {
@@ -275,13 +286,13 @@
 
         /* ===== BOTÃO FECHAR MODAL ===== */
         #victory-modal .btn-close-modal {
-            margin-top: 12px;
+            margin-top: 16px;
             background: transparent;
             border: 1px solid #4a6a8a;
             color: #8aaccf;
-            padding: 8px 24px;
+            padding: 12px 32px;
             border-radius: 40px;
-            font-size: 14px;
+            font-size: 18px;
             cursor: pointer;
             transition: 0.2s;
             font-family: 'Courier New', monospace;
@@ -304,7 +315,7 @@
             z-index: 9999;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 30px;
             animation: fadeIn 0.4s ease;
             cursor: pointer;
             flex-direction: column;
@@ -312,7 +323,7 @@
 
             #fullscreen-overlay img {
                 max-width: 95vw;
-                max-height: 85vh;
+                max-height: 82vh;
                 width: auto;
                 height: auto;
                 border-radius: 20px;
@@ -322,58 +333,71 @@
             }
 
             #fullscreen-overlay .close-hint {
-                margin-top: 15px;
+                margin-top: 20px;
                 color: #ffd966;
-                font-size: 16px;
+                font-size: 20px;
                 opacity: 0.6;
                 text-align: center;
                 background: rgba(0,0,0,0.5);
-                padding: 8px 24px;
+                padding: 12px 32px;
                 border-radius: 40px;
                 border: 1px solid #ffd966;
+                font-weight: bold;
             }
 
             /* ===== RODAPÉ DA TELA CHEIA ===== */
             #fullscreen-overlay .fullscreen-footer {
-                margin-top: 15px;
+                margin-top: 18px;
                 color: #4a6a8a;
-                font-size: 13px;
+                font-size: 17px;
                 text-align: center;
-                letter-spacing: 0.5px;
+                letter-spacing: 1px;
             }
 
                 #fullscreen-overlay .fullscreen-footer .dev-name {
                     color: #ff6b6b;
                     font-weight: bold;
                     text-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
-                    font-size: 14px;
-                    letter-spacing: 1px;
+                    font-size: 18px;
+                    letter-spacing: 1.5px;
                 }
 
                 #fullscreen-overlay .fullscreen-footer .dev-icon {
                     color: #ffd700;
-                    margin-left: 6px;
+                    margin-left: 8px;
+                    font-size: 18px;
                 }
 
         /* ===== RESPONSIVO ===== */
         @media (max-width: 600px) {
             #game-wrapper {
-                padding: 12px;
+                padding: 16px;
             }
 
             #hud {
-                font-size: 13px;
+                font-size: 16px;
                 justify-content: center;
             }
 
                 #hud span {
-                    padding: 4px 12px;
+                    font-size: 14px;
+                    padding: 6px 14px;
                 }
 
+                    #hud span #star-counter,
+                    #hud span #timer-display {
+                        font-size: 16px;
+                    }
+
             #message-box {
-                font-size: 13px;
-                padding: 8px 12px;
-                min-height: 42px;
+                font-size: 15px;
+                padding: 10px 14px;
+                min-height: 48px;
+            }
+
+            .btn-restart-small {
+                font-size: 15px;
+                padding: 10px 24px;
             }
 
             #victory-modal {
@@ -381,39 +405,125 @@
             }
 
                 #victory-modal .modal-title {
-                    font-size: 18px;
+                    font-size: 22px;
                 }
 
                 #victory-modal .btn-restart {
-                    font-size: 17px;
-                    padding: 12px 32px;
+                    font-size: 18px;
+                    padding: 14px 32px;
                     max-width: 100%;
                 }
 
-            #fullscreen-overlay .close-hint {
-                font-size: 13px;
-                padding: 6px 16px;
-            }
+                #victory-modal .btn-close-modal {
+                    font-size: 15px;
+                    padding: 8px 20px;
+                }
 
-            #fullscreen-overlay .fullscreen-footer {
-                font-size: 11px;
-            }
-
-            #footer {
-                font-size: 12px;
-                padding: 12px 16px;
-            }
-
-                #footer .dev-name {
+                #victory-modal .modal-footer {
                     font-size: 13px;
                 }
 
+                    #victory-modal .modal-footer .dev-name {
+                        font-size: 14px;
+                    }
+
+            #fullscreen-overlay .close-hint {
+                font-size: 15px;
+                padding: 8px 20px;
+            }
+
+            #fullscreen-overlay .fullscreen-footer {
+                font-size: 13px;
+            }
+
+                #fullscreen-overlay .fullscreen-footer .dev-name {
+                    font-size: 14px;
+                }
+
+            #footer {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+
+                #footer .dev-name {
+                    font-size: 15px;
+                }
+
+            #click-hint {
+                font-size: 14px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            #game-wrapper {
+                max-width: 1000px;
+            }
+
+            #hud {
+                font-size: 26px;
+            }
+
+                #hud span {
+                    font-size: 24px;
+                    padding: 14px 32px;
+                }
+
+                    #hud span #star-counter,
+                    #hud span #timer-display {
+                        font-size: 26px;
+                    }
+
+            #message-box {
+                font-size: 22px;
+                padding: 18px 24px;
+                min-height: 64px;
+            }
+
+            .btn-restart-small {
+                font-size: 22px;
+                padding: 14px 44px;
+            }
+
+            #victory-modal .modal-title {
+                font-size: 38px;
+            }
+
+            #victory-modal .btn-restart {
+                font-size: 28px;
+                padding: 20px 64px;
+                max-width: 420px;
+            }
+
+            #footer {
+                font-size: 20px;
+            }
+
+                #footer .dev-name {
+                    font-size: 22px;
+                }
+
+            #click-hint {
+                font-size: 20px;
+            }
+
             #victory-modal .modal-footer {
-                font-size: 11px;
+                font-size: 19px;
             }
 
                 #victory-modal .modal-footer .dev-name {
-                    font-size: 12px;
+                    font-size: 20px;
+                }
+
+            #fullscreen-overlay .close-hint {
+                font-size: 22px;
+            }
+
+            #fullscreen-overlay .fullscreen-footer {
+                font-size: 19px;
+            }
+
+                #fullscreen-overlay .fullscreen-footer .dev-name {
+                    font-size: 20px;
                 }
         }
     </style>
@@ -448,7 +558,7 @@
         <div id="victory-modal">
             <div class="modal-title">🎉 <span>PARABÉNS, DÉRYCK!</span> 🎉</div>
 
-            <!-- IMAGEM CLICÁVEL (VIA GITHUB PAGES) -->
+            <!-- IMAGEM CLICÁVEL -->
             <img src="https://GamerExtremoEliteHackerBR.github.io/Happy-Birthday/birthday/final.png"
                  alt="Parabéns Déryck - Level 18"
                  class="clickable-image"
@@ -663,7 +773,7 @@
                 // Se venceu, mensagem no canvas
                 if (collected >= TARGET && gameActive) {
                     ctx.save();
-                    ctx.font = 'bold 40px "Courier New", monospace';
+                    ctx.font = 'bold 44px "Courier New", monospace';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.shadowColor = '#ffd700';
@@ -672,7 +782,7 @@
                     ctx.fillText('🌟 LEVEL UP!', canvas.width / 2, 60);
                     ctx.shadowBlur = 0;
                     ctx.fillStyle = '#b7e1ff';
-                    ctx.font = '18px "Courier New", monospace';
+                    ctx.font = '22px "Courier New", monospace';
                     ctx.fillText('🎁 Desbloqueando sua recompensa...', canvas.width / 2, canvas.height - 35);
                     ctx.restore();
                 }
